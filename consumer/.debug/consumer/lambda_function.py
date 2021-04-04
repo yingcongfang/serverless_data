@@ -12,6 +12,7 @@ from io import StringIO
 #SETUP LOGGING
 import logging
 from pythonjsonlogger import jsonlogger
+import datetime
 
 LOG = logging.getLogger()
 LOG.setLevel(logging.DEBUG)
@@ -126,7 +127,8 @@ def write_s3(df, bucket):
     csv_buffer = StringIO()
     df.to_csv(csv_buffer)
     s3_resource = boto3.resource('s3')
-    res = s3_resource.Object(bucket, 'fang_sentiment.csv').\
+    filename = f"fang_sentiment_{datetime.datetime.now()}.csv"
+    res = s3_resource.Object(bucket, filename).\
         put(Body=csv_buffer.getvalue())
     LOG.info(f"result of write to bucket: {bucket} with:\n {res}")
 
